@@ -1,0 +1,33 @@
+<head>
+  <title>simple</title>
+</head>
+
+<body>
+  {{> s3_tester}}
+  
+
+ 
+</body>
+
+<template name="s3_tester">
+    
+    
+    <div>
+      <form id="form" enctype="multipart/form-data" >
+                  <label>Content File: </label>
+                  <input type="file" id="contentfile" name="filename"/><br/>
+                  <label>Style Files (Select multiple by shift clicking): </label>
+                  <input type="file" id="stylefiles" name="my_file[]" multiple="" /><br/>
+                  <label>Email: </label>
+                  <input type="text" id="email" />
+                  <br/>
+                  <input type="submit" id="submit" value="Upload Now"/>
+                  
+                  
+      </form>
+    </div>
+    
+    {{#each files}}
+        <p>File {{percent_uploaded}}% uploaded</p>
+    {{/each}}
+</template>
