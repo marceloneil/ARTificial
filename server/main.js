@@ -67,9 +67,9 @@ Router.route( "/sendData", { where: "server" } )
     
     Email.send({
       from: "pumpkin3500@gmail.com",
-      to: "kevin.shen18@yahoo.com",
+      to: this.request.body.recipient,
       subject: "ART-ifact Image",
-      text: "Your link to the product image: " + this.request.body.productURL
+      text: "Your link to the product image: " + this.request.body.productImg
     });
   
     this.response.statusCode = 200;
