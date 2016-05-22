@@ -1,8 +1,11 @@
 import { Meteor } from 'meteor/meteor';
 import { s3 } from 'meteor/lepozepo:s3';
 import { Email } from 'meteor/email';
+import { HTTP } from 'meteor/http';
 
 Submissions = new Mongo.Collection('submissions');
+
+var id = 0;
 
 Meteor.startup(() => {
   // code to run on server at startup
@@ -36,6 +39,24 @@ Meteor.methods({
     
     Submissions.insert({contentImageUrl: contentImageUrl, styleImagesUrl: styleImagesUrl, email: email});
     console.log("submission server side");
+  },
+  
+  sendLinks: function(contentImageUrl, styleImagesUrl){
+    
+    console.log("sending links");
+    HTTP.post( 'http://gpu.1lab.me/submitTask', { "idnum": id, "contentImg": contentImageUrl, "styleImg": styleImagesUrl}, function(error,response) {
+        if(error){
+          console.log("error in sending");
+          console.log(error);
+        } 
+        
+        console.log(response);
+        id++;
+    });
+    
+    /*HTTP.get('http://gpu.1lab.me', function(err, response){
+      console.log(response);
+    });*/
   }
 });
 

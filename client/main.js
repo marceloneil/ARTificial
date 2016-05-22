@@ -31,6 +31,7 @@ Template.s3_tester.events({
         
         var email = $('#email').val();
         var arrStyles = [];
+        var count = 0;
         S3.upload({
                 file: contentfile[0],
                 path:""
@@ -48,28 +49,33 @@ Template.s3_tester.events({
                         console.log(r2);
                         
                         arrStyles.push(r2.secure_url);
-                        
+                        count++;
                         
                         console.log(r.secure_url);
                         console.log(arrStyles.toString());
                         console.log(email);
                         
-                        Meteor.call('createSubmission', r.secure_url, arrStyles, email, function(error) {
-                                console.log(error);
-                                console.log("submission submitted");
-                            
-                        });
-                        
+                        if(count >= stylefiles.length){
+                            Meteor.call('createSubmission', r.secure_url, arrStyles, email, function(error) {
+                                
+                                    Meteor.call('sendLinks', r.secure_url, arrStyles, function(error){
+                                        console.log(error);
+                                        console.log("submission submitted");
+                                        Router.go('/end');
+                                    });
+                                    
+                                
+                            });
+                        }
                  
                         
                 });
                 
                 
-                Router.go('/end');
-                
         });
         
         
+                
         
     }
 });
@@ -89,3 +95,4 @@ Router.route('/end', function () {
   
   this.render('end');
 });
+
