@@ -2,11 +2,13 @@ import { Template } from 'meteor/templating';
 import { s3 } from 'meteor/lepozepo:s3';
 import { Email } from 'meteor/email';
 import { Router } from 'meteor/iron:router';
+import { Session } from 'meteor/session';
 import './main.html';
 
 Template.s3_tester.events({
     //click button.upload
     "submit form": function(event, template){
+        Session.set("hasFiles", true);
         console.log("button clicked");
         event.preventDefault();
         event.stopPropagation();
@@ -58,9 +60,12 @@ Template.s3_tester.events({
                         if(count >= stylefiles.length){
                             Meteor.call('createSubmission', r.secure_url, arrStyles, email, function(error) {
                                 
-                                    Meteor.call('sendLinks', r.secure_url, arrStyles, function(error){
+                                    Meteor.call('sendLinks', r.secure_url, arrStyles, email, function(error){
                                         console.log(error);
                                         console.log("submission submitted");
+                                        Session.set("hasFiles", false);
+                                        $('.collection').remove();
+                                        $('.collection-item').remove();
                                         Router.go('/end');
                                     });
                                     
@@ -86,6 +91,12 @@ Template.s3_tester.helpers({
     }
 });
 
+Template.s3_tester.hasFiles = function(){
+   // because the Session variable will most probably be undefined the first time
+   
+   return Session.get("hasFiles");
+};
+
 Router.route('/', function () {
   console.log("rendering s3_tester");
   this.render('s3_tester');
@@ -95,4 +106,6 @@ Router.route('/end', function () {
   
   this.render('end');
 });
+
+
 

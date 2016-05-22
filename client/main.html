@@ -77,13 +77,15 @@
         </div>
   
    
-        
-    <div class="collection">
+    {{#if hasFiles}}
+    <div class="collection" id="uploadprogress">
     {{#each files}}
         <!--<p>File {{percent_uploaded}}% uploaded</p>-->
         <a href="#!" class="collection-item">File {{percent_uploaded}}% uploaded</a>
     {{/each}}
     </div>
+    {{/if}}
+    
          
 </template>
 
