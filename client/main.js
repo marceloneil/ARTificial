@@ -1,6 +1,7 @@
 import { Template } from 'meteor/templating';
 import { s3 } from 'meteor/lepozepo:s3';
-import { Email } from 'meteor/email'
+import { Email } from 'meteor/email';
+import { Router } from 'meteor/iron:router';
 import './main.html';
 
 Template.s3_tester.events({
@@ -59,8 +60,16 @@ Template.s3_tester.events({
                             
                         });
                         
+                 
+                        
                 });
+                
+                
+                Router.go('/end');
+                
         });
+        
+        
         
     }
 });
@@ -69,4 +78,14 @@ Template.s3_tester.helpers({
     "files": function(){
         return S3.collection.find();
     }
+});
+
+Router.route('/', function () {
+  console.log("rendering s3_tester");
+  this.render('s3_tester');
+});
+
+Router.route('/end', function () {
+  
+  this.render('end');
 });
