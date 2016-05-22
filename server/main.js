@@ -6,13 +6,13 @@ import { Router } from 'meteor/iron:router';
 
 Submissions = new Mongo.Collection('submissions');
 
-var id = 1;
+//var id = 1;
 
 Meteor.startup(() => {
   // code to run on server at startup
   //console.log(Meteor.settings.s3.key);
   //console.log(S3);
-  id = 1;
+  //id = 1;
   
   S3.config = {
     key: Meteor.settings.s3.key,
@@ -32,15 +32,16 @@ Meteor.startup(() => {
 });
 
 Meteor.methods({
-  createSubmission: function (contentImageUrl, styleImagesUrl, email) {
-    
-    Submissions.insert({contentImageUrl: contentImageUrl, styleImagesUrl: styleImagesUrl, email: email});
+  createSubmission: function (id, contentImageUrl, styleImagesUrl, email) {
     console.log("submission server side");
+    return Submissions.insert({_id: id, contentImageUrl: contentImageUrl, styleImagesUrl: styleImagesUrl, email: email});
+    
   },
   
-  sendLinks: function(contentImageUrl, styleImagesUrl, email){
+  sendLinks: function(id, contentImageUrl, styleImagesUrl, email){
     
     console.log("sending links");
+    console.log("The id being sent " + id);
     HTTP.post( 'http://gpu.1lab.me/submitTask', {"data" :{ "idnum": id, "contentImg": contentImageUrl, "styleImg": styleImagesUrl, "email": email} }, function(error,response) {
         if(error){
           console.log("error in sending");
@@ -48,7 +49,7 @@ Meteor.methods({
         } 
         
         console.log(response);
-        id++;
+        //id++;
     });
     
     /*HTTP.get('http://gpu.1lab.me', function(err, response){

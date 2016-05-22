@@ -3,6 +3,7 @@ import { s3 } from 'meteor/lepozepo:s3';
 import { Email } from 'meteor/email';
 import { Router } from 'meteor/iron:router';
 import { Session } from 'meteor/session';
+import {Random } from 'meteor/random';
 import './main.html';
 
 Template.s3_tester.events({
@@ -34,9 +35,11 @@ Template.s3_tester.events({
         var email = $('#email').val();
         var arrStyles = [];
         var count = 0;
+        var id = Random.id();
+        console.log("unique id "+id);
         S3.upload({
                 file: contentfile[0],
-                path:""
+                path:id
         },function(e,r){
                 console.log("file uploaded");
                 console.log("error " + e);
@@ -44,7 +47,7 @@ Template.s3_tester.events({
                 
                 S3.upload({
                         files: stylefiles,
-                        path:""
+                        path:id
                 },function(e,r2){
                         console.log("file uploaded");
                         console.log("error " + e);
@@ -58,9 +61,11 @@ Template.s3_tester.events({
                         console.log(email);
                         
                         if(count >= stylefiles.length){
-                            Meteor.call('createSubmission', r.secure_url, arrStyles, email, function(error) {
-                                
-                                    Meteor.call('sendLinks', r.secure_url, arrStyles, email, function(error){
+                            Meteor.call('createSubmission', id, r.secure_url, arrStyles, email, function(error, result) {
+                                    console.log(JSON.stringify(result));
+                                    var id = result._id;
+                                    console.log("resulting id: " + id);
+                                    Meteor.call('sendLinks', result, r.secure_url, arrStyles, email, function(error){
                                         console.log(error);
                                         console.log("submission submitted");
                                         Session.set("hasFiles", false);
